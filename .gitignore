@@ -1,0 +1,8 @@
+#ignore logs
+*.log
+
+#ignore jars
+*.jar
+
+#ignore targets
+target/

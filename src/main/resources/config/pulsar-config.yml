@@ -1,0 +1,7 @@
+info:
+  PULSAR_TOKEN: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzgwNzU4MTMsImlzcyI6ImRhdGFzdGF4Iiwic3ViIjoiY2xpZW50OzM1OTZmZDU3LTI3MDYtNDNkMy05NWQwLTNhNzBkYTM0ZTRhZTtabWx5YzNRdFpHVnRieTEwWlc1aGJuUT07MWM1OWEzYzE2MyIsInRva2VuaWQiOiIxYzU5YTNjMTYzIn0.QWg0DchM17_wsOCAwuhJ-i55xukPUqu_OG04upTTnL_sizQQVu5-UJD3hTfAZ7ZZ99dRJC2bX4C_Zlbvu7dxlw3FjNdnTzH-0CDQl1Z2TnH0QRC-QkUK3Xem4rjErLYWYIJ0cLlIPhZQQ_Mb_vw9waerd0jTz_-NIVth3bmbBVil19VWonx8SlgDn8Q4H8MGRzS0RXs_NElMoFZkcFKgQkV9Y2r60o7Pf6O2qr-M6jm4o0qlJi2OKJ_qVhs-FsfG-0AfMRfkgKazX9RfkHgesoCgQtHnUYSBEyU0bUPni-270NTxutdgGueWuNlXlFi4Ge6Ii7IUemlDJZ_V9bZFtw"
+  WEB_SERVICE_URL: "pulsar+ssl://pulsar-gcp-useast1.streaming.datastax.com:6651"
+  NAMESPACE: "demo-namesapce-adobe"
+  TENANT: "first-demo-tenant"
+  TOPIC: "test-demo-topic"
+  NUM_OF_PARTITIONS: "2"
