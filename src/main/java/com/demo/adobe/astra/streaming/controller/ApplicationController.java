@@ -1,13 +1,12 @@
 package com.demo.adobe.astra.streaming.controller;
 
 import com.demo.adobe.astra.streaming.config.AppConfig;
-import com.demo.adobe.astra.streaming.consumer.StreamingConsumer;
-import com.demo.adobe.astra.streaming.producer.StreamingProducer;
+import com.demo.adobe.astra.streaming.impl.StreamingConsumer;
+import com.demo.adobe.astra.streaming.impl.StreamingProducer;
 import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.PulsarClientException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,14 +19,14 @@ public class ApplicationController {
     private long counter = 1;
 
     @Autowired
-    public ApplicationController(AppConfig config, PulsarClient client, Producer<byte[]> producer, ApplicationContext applicationContext) {
+    public ApplicationController(AppConfig config, PulsarClient client, Producer<byte[]> producer) {
         this.config = config;
         this.client = client;
         this.producer = producer;
     }
 
     @GetMapping("/produce")
-    public String produce() throws PulsarClientException {
+    public String produce() {
         StreamingProducer streamingProducer = new StreamingProducer(config,producer);
         streamingProducer.produce();
         return "Produce";
@@ -36,11 +35,6 @@ public class ApplicationController {
     @GetMapping("/startConsumer")
     public String startConsumer() throws PulsarClientException {
         return "Started Consumer: " + new StreamingConsumer(config, client).startConsumer("Consumer" + (++counter));
-    }
-
-    @GetMapping("/failover")
-    public String failover() {
-        return "Successfully performed failover";
     }
 
     @GetMapping("/conn/close")

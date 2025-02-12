@@ -1,4 +1,4 @@
-package com.demo.adobe.astra.streaming.consumer;
+package com.demo.adobe.astra.streaming.impl;
 
 import com.demo.adobe.astra.streaming.config.AppConfig;
 import org.apache.pulsar.client.api.Consumer;

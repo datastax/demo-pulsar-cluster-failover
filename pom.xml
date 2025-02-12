@@ -12,7 +12,6 @@
     <groupId>com.demo.adobe.astra.streaming</groupId>
     <artifactId>demo-adobe-cluster-failover</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>pom</packaging>
     <name>demo</name>
 
     <properties>

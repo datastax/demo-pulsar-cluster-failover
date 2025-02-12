@@ -1,9 +1,6 @@
 package com.demo.adobe.astra.streaming.config;
 
-import org.apache.pulsar.client.api.Producer;
-import org.apache.pulsar.client.api.PulsarClient;
-import org.apache.pulsar.client.api.PulsarClientException;
-import org.apache.pulsar.client.api.ServiceUrlProvider;
+import org.apache.pulsar.client.api.*;
 import org.apache.pulsar.client.impl.ControlledClusterFailover;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -12,26 +9,20 @@ import org.springframework.context.annotation.PropertySource;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 @PropertySource("classpath:pulsar-config.properties")
 public class AppConfig {
 
-    @Value("${PRIMARY_PULSAR_TOKEN}")
-    public String PRIMARY_PULSAR_TOKEN;
     @Value("${PRIMARY_CLUSTER_ID}")
     public String PRIMARY_CLUSTER_ID;
-    @Value("${PRIMARY_WEB_SERVICE_URL}")
-    public String PRIMARY_WEB_SERVICE_URL;
-    @Value("${PRIMARY_BROKER_SERVICE_URL}")
-    public String PRIMARY_BROKER_SERVICE_URL;
-    @Value("${SECONDARY_PULSAR_TOKEN}")
-    public String SECONDARY_PULSAR_TOKEN;
     @Value("${SECONDARY_CLUSTER_ID}")
     public String SECONDARY_CLUSTER_ID;
-    @Value("${SECONDARY_BROKER_SERVICE_URL}")
-    public String SECONDARY_BROKER_SERVICE_URL;
-
+    @Value("${WEB_SERVICE_URL}")
+    public String WEB_SERVICE_URL;
+    @Value("${BROKER_SERVICE_URL}")
+    public String BROKER_SERVICE_URL;
     @Value("${NAMESPACE}")
     public String NAMESPACE;
     @Value("${TENANT}")
@@ -42,28 +33,34 @@ public class AppConfig {
     public String SUBSCRIPTION_NAME;
     @Value("${URL_PROVIDER}")
     public String URL_PROVIDER;
-    @Value("${AUTH_PLUGIN_CLASS}")
-    public String AUTH_PLUGIN_CLASS;
+    @Value("${DEFAULT_SERVICE_URL}")
+    public String DEFAULT_SERVICE_URL;
+    @Value("${DEFAULT_AUTH_PARAM")
+    public String DEFAULT_AUTH_PARAM;
 
-    @Bean
+    @Bean(name = "pulsarClient")
     public PulsarClient client() throws Exception {
         System.out.println("Creating Pulsar client");
 
         //Cluster level Failover logic
         Map<String, String> header = new HashMap<>();
-        header.put(PRIMARY_CLUSTER_ID, PRIMARY_PULSAR_TOKEN);
-        header.put(SECONDARY_CLUSTER_ID, SECONDARY_PULSAR_TOKEN);
+//        header.put("Content-Type", "application/json");
+//        header.put("Authorization", DEFAULT_AUTH_PARAM);
 
         ServiceUrlProvider provider =
                 ControlledClusterFailover.builder()
-                        .defaultServiceUrl(PRIMARY_BROKER_SERVICE_URL)
-                        //.checkInterval(30, TimeUnit.MINUTES)
+                        .defaultServiceUrl(DEFAULT_SERVICE_URL)
+                        .checkInterval(1, TimeUnit.MINUTES)
                         .urlProvider(URL_PROVIDER)
-                        .urlProviderHeader(header)
+//                        .urlProviderHeader(header)
                         .build();
 
         System.out.println("Provider details: " + provider);
-        PulsarClient client = PulsarClient.builder().serviceUrlProvider(provider).build();
+        PulsarClient client = PulsarClient.builder()
+                .serviceUrlProvider(provider)
+                .connectionTimeout(5, TimeUnit.MINUTES)
+                .operationTimeout(5, TimeUnit.MINUTES)
+                .build();
         provider.initialize(client);
         System.out.println("Pulsar client initialized: "+client);
         return client;
@@ -81,9 +78,9 @@ public class AppConfig {
     }*/
 
     @Bean
-    public Producer<byte[]> producer(PulsarClient client) throws PulsarClientException {
+    public Producer<byte[]> startProducer() throws Exception {
         System.out.println("Starting producer...");
-        return client.newProducer()
+        return client().newProducer()
                 .topic("persistent://" + TENANT + "/" + NAMESPACE + "/" + TOPIC)
                 .create();
     }
