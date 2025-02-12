@@ -17,7 +17,7 @@ public class ApplicationController {
     private final PulsarClient client;
     private final AppConfig config;
     private final Producer<byte[]> producer;
-    private long counter = 0;
+    private long counter = 1;
 
     @Autowired
     public ApplicationController(AppConfig config, PulsarClient client, Producer<byte[]> producer, ApplicationContext applicationContext) {
@@ -28,7 +28,7 @@ public class ApplicationController {
 
     @GetMapping("/produce")
     public String produce() throws PulsarClientException {
-        StreamingProducer streamingProducer = new StreamingProducer(producer);
+        StreamingProducer streamingProducer = new StreamingProducer(config,producer);
         streamingProducer.produce();
         return "Produce";
     }

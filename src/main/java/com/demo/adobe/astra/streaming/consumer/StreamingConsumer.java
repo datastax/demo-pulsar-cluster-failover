@@ -30,7 +30,7 @@ public class StreamingConsumer {
                 .consumerName(name)
                 .topic("persistent://" + config.TENANT + "/" + config.NAMESPACE + "/" + config.TOPIC)
                 .subscriptionName(config.SUBSCRIPTION_NAME)
-                .subscriptionType(SubscriptionType.Shared)
+                .subscriptionType(SubscriptionType.Exclusive)
                 .replicateSubscriptionState(true)
                 .messageListener((consumer, message) -> {
                     try {
@@ -38,8 +38,8 @@ public class StreamingConsumer {
                         consumer.acknowledge(message);
                     } catch (PulsarClientException e) {
                         throw new RuntimeException(e);
-                    }
-                }).subscribe();
+                    }})
+                .subscribe();
     }
 
     @Bean
