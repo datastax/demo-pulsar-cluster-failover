@@ -5,7 +5,6 @@ import com.demo.adobe.astra.streaming.impl.StreamingConsumer;
 import com.demo.adobe.astra.streaming.impl.StreamingProducer;
 import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.PulsarClient;
-import org.apache.pulsar.client.api.PulsarClientException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,10 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ApplicationController {
 
-    private final PulsarClient client;
     private final AppConfig config;
+    private final PulsarClient client;
     private final Producer<byte[]> producer;
-    private long counter = 1;
+    private long producerNo = 1;
+    private long consumerNo = 1;
 
     @Autowired
     public ApplicationController(AppConfig config, PulsarClient client, Producer<byte[]> producer) {
@@ -27,18 +27,23 @@ public class ApplicationController {
 
     @GetMapping("/produce")
     public String produce() {
-        StreamingProducer streamingProducer = new StreamingProducer(config,producer);
-        streamingProducer.produce();
+        StreamingProducer streamingProducer = new StreamingProducer(config,client);
+        streamingProducer.produce(producer);
         return "Produce";
     }
 
+    @GetMapping("/startProducer")
+    public String startProducer() throws Exception {
+        return "Started Consumer: " + new StreamingProducer(config,client).producer("Consumer" + (++producerNo));
+    }
+
     @GetMapping("/startConsumer")
-    public String startConsumer() throws PulsarClientException {
-        return "Started Consumer: " + new StreamingConsumer(config, client).startConsumer("Consumer" + (++counter));
+    public String startConsumer() throws Exception {
+        return "Started Consumer: " + new StreamingConsumer(config,client).startConsumer("Consumer" + (++consumerNo));
     }
 
     @GetMapping("/conn/close")
-    public String close() throws PulsarClientException {
+    public String close() throws Exception {
         client.close();
         return "Successfully closed connection";
     }

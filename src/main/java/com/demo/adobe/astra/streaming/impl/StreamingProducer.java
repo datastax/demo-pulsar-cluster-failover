@@ -2,8 +2,10 @@ package com.demo.adobe.astra.streaming.impl;
 
 import com.demo.adobe.astra.streaming.config.AppConfig;
 import org.apache.pulsar.client.api.Producer;
+import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.PulsarClientException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -13,15 +15,27 @@ import java.util.stream.IntStream;
 public class StreamingProducer {
 
     private final AppConfig config;
-    private final Producer<byte[]> producer;
+    private final PulsarClient client;
 
     @Autowired
-    public StreamingProducer(AppConfig config, Producer<byte[]> producer) {
+    public StreamingProducer(AppConfig config, PulsarClient client) {
         this.config = config;
-        this.producer = producer;
+        this.client = client;
     }
 
-    public void produce() {
+    @Bean
+    public Producer<byte[]> producer (String producerName) throws Exception {
+        if (producerName == null || producerName.isEmpty()) {
+            producerName = "producerName1";
+        }
+        System.out.println("Starting producer..."+producerName);
+        return client.newProducer()
+                .producerName(producerName)
+                .topic("persistent://" + config.TENANT + "/" + config.NAMESPACE + "/" + config.TOPIC)
+                .create();
+    }
+
+    public void produce(Producer<byte[]> producer) {
         IntStream.range(0, 100).forEach(i -> {
             String msg = Math.random() + " Message " + LocalDateTime.now();
             try {
@@ -36,4 +50,9 @@ public class StreamingProducer {
             }
         });
     }
+
+    /*@Bean
+    public String startProducer(String producerName) throws Exception {
+        return producer(producerName).getProducerName();
+    }*/
 }

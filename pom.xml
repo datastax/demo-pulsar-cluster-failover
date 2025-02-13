@@ -16,7 +16,7 @@
 
     <properties>
         <java.version>11</java.version>
-        <pulsar.version>3.1.3</pulsar.version>
+        <pulsar.version>1.0.6</pulsar.version>
         <lombok.version>1.18.36</lombok.version>
     </properties>
 
@@ -51,6 +51,11 @@
 
         <!-- Pulsar dependencies-->
         <dependency>
+            <groupId>org.springframework.pulsar</groupId>
+            <artifactId>spring-pulsar</artifactId>
+            <version>${pulsar.version}</version>
+        </dependency>
+        <!--<dependency>
             <groupId>org.apache.pulsar</groupId>
             <artifactId>pulsar-client</artifactId>
             <version>${pulsar.version}</version>
@@ -59,7 +64,7 @@
             <groupId>org.apache.pulsar</groupId>
             <artifactId>pulsar-client-admin</artifactId>
             <version>${pulsar.version}</version>
-        </dependency>
+        </dependency>-->
 
         <!-- Lombok dependencies-->
         <dependency>

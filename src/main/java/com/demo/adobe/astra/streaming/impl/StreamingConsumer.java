@@ -21,30 +21,35 @@ public class StreamingConsumer {
         this.client = client;
     }
 
-    public Consumer<byte[]> consumer(String name) throws PulsarClientException {
-        if (name == null || name.isEmpty()) {
-            name = "Consumer1";
+    public Consumer<byte[]> consumer(String consumerName){
+        if (consumerName == null || consumerName.isEmpty()) {
+            consumerName = "Consumer1";
         }
-        System.out.println("Starting consumer..." + name);
-        return client.newConsumer()
-                .consumerName(name)
-                .topic("persistent://" + config.TENANT + "/" + config.NAMESPACE + "/" + config.TOPIC)
-                .subscriptionName(config.SUBSCRIPTION_NAME)
-                .subscriptionType(SubscriptionType.Exclusive)
-                .replicateSubscriptionState(true)
-                .messageListener((consumer, message) -> {
-                    try {
-                        System.out.println("Consumer:" + consumer.getConsumerName() + ", Read: " + new String(message.getData()));
-                        consumer.acknowledge(message);
-                    } catch (PulsarClientException e) {
-                        throw new RuntimeException(e);
-                    }})
-                .subscribe();
+        System.out.println("Starting consumer..." + consumerName);
+        try {
+            return client.newConsumer()
+                    .consumerName(consumerName)
+                    .topic("persistent://" + config.TENANT + "/" + config.NAMESPACE + "/" + config.TOPIC)
+                    .subscriptionName(config.SUBSCRIPTION_NAME)
+                    .subscriptionType(SubscriptionType.Exclusive)
+                    .replicateSubscriptionState(true)
+                    .messageListener((consumer, message) -> {
+                        try {
+                            System.out.println("Consumer:" + consumer.getConsumerName() + ", Read: " + new String(message.getData()));
+                            consumer.acknowledge(message);
+                        } catch (PulsarClientException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .subscribe();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Bean
-    public String startConsumer(String name) throws PulsarClientException {
-        return consumer(name).getConsumerName();
+    public String startConsumer(String consumerName) throws Exception {
+        return consumer(consumerName).getConsumerName();
     }
 
 }
