@@ -24,13 +24,13 @@ public class StreamingProducer {
     }
 
     @Bean
-    public Producer<byte[]> producer (String producerName) throws Exception {
-        if (producerName == null || producerName.isEmpty()) {
-            producerName = "producerName1";
+    public Producer<byte[]> producer(String name) throws Exception {
+        if (name == null || name.isEmpty()) {
+            name = "producer-1-" + System.nanoTime();
         }
-        System.out.println("Starting producer..."+producerName);
+        System.out.println("Starting producer..." + name);
         return client.newProducer()
-                .producerName(producerName)
+                .producerName(name)
                 .topic("persistent://" + config.TENANT + "/" + config.NAMESPACE + "/" + config.TOPIC)
                 .create();
     }
@@ -44,7 +44,7 @@ public class StreamingProducer {
                         .value(msg.getBytes())
                         //.replicationClusters(Arrays.asList(config.PRIMARY_CLUSTER_ID,config.SECONDARY_CLUSTER_ID))
                         .send();
-                System.out.println("Producer:"+producer.getProducerName()+", Message " + msg);
+                System.out.println("Producer:" + producer.getProducerName() + ", Message " + msg);
             } catch (PulsarClientException e) {
                 throw new RuntimeException(e);
             }

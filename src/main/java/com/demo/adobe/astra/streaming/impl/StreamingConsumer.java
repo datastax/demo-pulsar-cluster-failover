@@ -21,9 +21,9 @@ public class StreamingConsumer {
         this.client = client;
     }
 
-    public Consumer<byte[]> consumer(String consumerName){
+    public Consumer<byte[]> consumer(String consumerName) {
         if (consumerName == null || consumerName.isEmpty()) {
-            consumerName = "Consumer1";
+            consumerName = "Consumer-1-" + System.nanoTime();
         }
         System.out.println("Starting consumer..." + consumerName);
         try {

@@ -56,7 +56,7 @@ public class AppConfig {
             client = PulsarClient.builder()
                     .serviceUrlProvider(provider)
                     .build();
-            TimeUnit.SECONDS.sleep(10);
+            TimeUnit.SECONDS.sleep(6);
             provider.initialize(client);
             System.out.println("Pulsar client initialized: " + client);
             return client;
@@ -86,12 +86,7 @@ public class AppConfig {
     }*/
 
     @Bean
-    public String producerName() {
-        return "";
-    }
-
-    @Bean
-    public String consumerName() {
+    public String name() {
         return "";
     }
 

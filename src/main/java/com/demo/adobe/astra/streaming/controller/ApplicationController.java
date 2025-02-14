@@ -27,19 +27,19 @@ public class ApplicationController {
 
     @GetMapping("/produce")
     public String produce() {
-        StreamingProducer streamingProducer = new StreamingProducer(config,client);
+        StreamingProducer streamingProducer = new StreamingProducer(config, client);
         streamingProducer.produce(producer);
         return "Produce";
     }
 
     @GetMapping("/startProducer")
     public String startProducer() throws Exception {
-        return "Started Consumer: " + new StreamingProducer(config,client).producer("Consumer" + (++producerNo));
+        return "Started producer: " + new StreamingProducer(config, client).producer("Producer-" + (++producerNo) + "-" + System.nanoTime());
     }
 
     @GetMapping("/startConsumer")
     public String startConsumer() throws Exception {
-        return "Started Consumer: " + new StreamingConsumer(config,client).startConsumer("Consumer" + (++consumerNo));
+        return "Started Consumer: " + new StreamingConsumer(config, client).startConsumer("Consumer-" + (++consumerNo) + "-" + System.nanoTime());
     }
 
     @GetMapping("/conn/close")
