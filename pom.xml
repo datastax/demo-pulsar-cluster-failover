@@ -10,7 +10,7 @@
     </parent>
 
     <groupId>com.demo.adobe.astra.streaming</groupId>
-    <artifactId>demo-adobe-cluster-failover</artifactId>
+    <artifactId>demo-pulsar-cluster-failover</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>demo</name>
 
