@@ -28,17 +28,13 @@ Below is a high-level diagram of the above components and the Pulsar Controlled 
   - URL provider (<http://localhost:8081/provider>)
  
 ## Working with the applications
-
 ### Building the app
 From the root folder of the repo, run the command:
 `mvn clean package spring-boot:repackage`
 
-
 ### Running the app
-To run the application use command:
-`java -jar targe/demo-pulsar-cluster-failover-<version>.jar`
-
-`<version>` - should be updated based on the latest version build of the application. Refer to <version> at [pom.xml](pom.xml)
+To run the application use command: `java -jar targe/demo-pulsar-cluster-failover-<version>.jar`
+- `<version>` - should be updated based on the latest version build of the application. Refer to <version> at [pom.xml](pom.xml)
 
 #### Application run order:
 1. SpringBoot application initialization 
@@ -46,6 +42,21 @@ To run the application use command:
 3. Pulsar client will be initialized based on the configuration returned by the Provider app. 
 4. Post client initialization, the application will first bring up a producer and then a consumer. 
 6. At the end of this you will have the application running with one producer and one consumer.
+
+### Managing Application
+The application supports handling for multiple producers and consumers. To achieve that below endpoints will be used:
+#### Producer:
+- You can bring up additional producers using the endpoint `/startProducer`.
+  - If running in local, use the endpoint: `http://localhost:8080/startProducer`
+- For more details please refer to how to [work with producer](https://pulsar.apache.org/docs/3.0.x/client-libraries-producers/).
+#### Consumer: 
+- You can bring up additional consumer using the endpoint `/startConsumer`.
+  - If running in local, use the endpoint: `http://localhost:8080/startConsumer`
+- For more details please refer to how to [work with consumers](https://pulsar.apache.org/docs/3.0.x/client-libraries-consumers/).
+#### Client:
+- You can close the client connection using the endpoint `/conn/close`, this will close the client connecting and bringing down any running producers or consumers.
+  - If running in local, use the endpoint: `http://localhost:8080/conn/close`
+- For more details please refer to how to [work with clients](https://pulsar.apache.org/docs/3.3.x/client-libraries-consumers/).
 
 ### Performing failover
 Provider app will handle the configuration for the primaryCluster and how to handle failover.
